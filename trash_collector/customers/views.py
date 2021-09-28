@@ -22,7 +22,7 @@ def index(request):
             'today': today
         }
         return render(request, 'customers/index.html', context)
-    except ObjectDoesNotExist:
+    except ObjectDoesNotExist: 
         return HttpResponseRedirect(reverse('customers:create'))
 
 @login_required
