@@ -1,4 +1,16 @@
 {% extends 'base.html' %}
+{% block content %}
+  {% if user.is_authenticated %}
+        Hello {{ logged_in_employee.name }}!<br />
+        Zip Code: {{logged_in_employee.zip_code }}<br />
+        <br />
+        <br />
+        Todays scheduled pick up: {{ logged_in_employee.todays_pickup }}
+        <!-- <br />
+        <br />
+        {% if today > logged_in_customer.suspend_start and today < logged_in_customer.suspend_end %}
+          Your pickups are suspended until {{ logged_in_customer.suspend_end }}
+        {% endif %} -->
 
 {% block title %}{% block header %} Employee Home {% endblock %}{% endblock %}
 
