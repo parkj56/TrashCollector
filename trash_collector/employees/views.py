@@ -44,6 +44,17 @@ def index(request):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse(request,'employees:create', context))
 
+@login_required
+def create(request):
+    logged_in_user = request.user
+    if request.method == "POST":
+        name_from_form = request.POST.get('name')
+        zip_from_form = request.POST.get('zip_code')
+        new_employee = Employee(name=name_from_form, user=logged_in_user, zip_code=zip_from_form,)
+        new_employee.save()
+        return HttpResponseRedirect(reverse('employees:index'))
+    else:
+        return render(request, 'employees/create.html')
 
 @login_required
 def edit_profile(request):
@@ -61,3 +72,24 @@ def edit_profile(request):
             'logged_in_employee': logged_in_employee
         }
         return render(request,'employees/edit_profile.html', context)
+
+def day_filter(request):
+    logged_in_user = request.user
+    logged_in_employee = Employee.objects.get(user=logged_in_user)
+    if request.method == "POST":
+        week_day = request.POST.get('day')
+        filtered_customers = Customer.objects.filter(pickup_day=week_day)
+        context = {
+            'filterd_customers': filtered_customers,
+            'logged_in_employee': logged_in_employee,
+        }
+        return render(request, 'employee:index', context)
+    else:
+        return render(request, 'employee:index')
+
+@login_required
+def comfirm_pickup(request, customer_id):
+    customer_update = Customer.objects.get(customer_id)
+    customer_update.charge += 20
+    customer_update.save()
+    return HttpResponseRedirect(reverse('employees:index'))
