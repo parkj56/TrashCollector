@@ -42,7 +42,7 @@ def index(request):
         #Customer = apps.get_model('customers.Customer')
         return render(request, 'employees/index.html')
     except ObjectDoesNotExist:
-        return HttpResponseRedirect(reverse(request,'employees:create', context))
+        return HttpResponseRedirect(reverse(request,'employees:create'))
 
 
 @login_required
