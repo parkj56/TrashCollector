@@ -1,21 +1,25 @@
-{% extends 'customers\customer_base.html' %}
+{% extends 'Employees\employee_base.html' %}
 
-{% block title %} Customer Home {% endblock %}
+{% block title %} Employee Home {% endblock %}
 
-{% block header %} Customer Portal {% endblock %}
+{% block header %} Employee Portal {% endblock %}
 
 {% block content %}
   {% if user.is_authenticated %}
         Hello {{ logged_in_employee.name }}!<br />
         Zip Code: {{logged_in_employee.zip_code }}<br />
+        Today's date is: {{today}}
         <br />
         <br />
-        Todays scheduled Pickup: {{ logged_in_employee.weekly_or_onetimes }}
+        <h1> Todays weekly/onetime pickups:</h1>
+         {% for customers in weekly_or_onetimes %}  
+          <br/>
+          {{customers.name}}, {{customers.address}}  
+          
         <br />
-        <br />
-        You have an extra pickup scheduled for: {{ logged_in_employee.weekly_or_onetimes}}
-        <br />
-        <br />
+       {% endfor %}
+        
+        
   {% else %}
     <p>You are at the employee index, but you are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a>
