@@ -29,8 +29,6 @@ def index(request):
         # suspetion_dates= Customer.objects.filter(suspend_start=) 
         weekly_or_onetimes = customers_zipcode.filter(weekly_pickup= weekday) | customers_zipcode.filter(one_time_pickup= today)
         
-        
-    
         context ={
             'logged_in_employee': logged_in_employee,
             'today': today,
@@ -64,7 +62,7 @@ def edit_profile(request):
         logged_in_employee.name = name_from_form
         logged_in_employee.zip_code = zip_from_form
         logged_in_employee.save()
-        return HttpResponseRedirect(reverse(request, 'employees:index'))
+        return HttpResponseRedirect(reverse( 'employees:index'))
     else:
         context = {
             'logged_in_employee': logged_in_employee
@@ -87,7 +85,8 @@ def day_filter(request):
 
 @login_required
 def comfirm_pickup(request, customer_id):
-    customer_update = Customer.objects.get(customer_id)
+    Customer = apps.get_model('customers.Customer')
+    customer_update = Customer.objects.get(pk = customer_id)
     customer_update.charge += 20
     customer_update.save()
     return HttpResponseRedirect(reverse('employees:index'))
