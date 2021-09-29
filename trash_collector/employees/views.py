@@ -22,18 +22,19 @@ def index(request):
         logged_in_employee = Employee.objects.get(user=logged_in_user)
 
         today = date.today()
+        weekday_number= today.weekday()
+        list_of_weekdays= ['Monday', 'Tuesday', 'Wednesday', 'Thursay', 'Friday']
+        weekday= list_of_weekdays[weekday_number]
+        customers_zipcode = Customer.objects.filter(zip_code = logged_in_employee.zip_code)
         # suspetion_dates= Customer.objects.filter(suspend_start=) 
-        todays_weekly_pickup= Customer.objects.filter(weekly_pickup= today)
-        todays_onetime_pickup= Customer.objects.filter(one_time_pickup= today)
-        zipcode_match= Customer.objects.filter(zip_code=(Employee.zip_code))
+        weekly_or_onetimes = customers_zipcode.filter(weekly_pickup= weekday) | customers_zipcode.filter(one_time_pickup= today)
+        
         
     
         context ={
             'logged_in_employee': logged_in_employee,
             'today': today,
-            'todays_weekly_pickup': todays_weekly_pickup, 
-            'todays_onetime_pickup': todays_onetime_pickup,
-            'zipcode_match': zipcode_match,
+            'weekly_or_onetimes': weekly_or_onetimes
             
         }
         #Customer = apps.get_model('customers.Customer')
