@@ -11,21 +11,21 @@
         Today's date is: {{today}}
         <br />
         <br />
-        <h1> Todays weekly/onetime pickups:</h1>
+        <h2> Todays weekly/onetime pickups:</h2>
          {% for customers in weekly_or_onetimes %}  
           <br/>
           <table>
             <tr>
-              <th> Name </th>
-              <th>  Address </th>
-              <th> Confirmation </th>
+              <p><th> Name </th></p>
+              <p><th>  Address </th></p>
+              <p><th> Confirmation </th></p>
             </tr>
             <tr>
               <td>{{ customers.name }}</td>
               <td>{{ customers.address }}</td>
               <td>
                 <a href ="{% url 'employees:confirm_pickup' customers.id %}">
-                  <button type="button" onclick="alert('Pickup Confirmed')"> Confirm Pickup </button>
+                  <button type="button" class="btn btn-outline-primary" onclick="alert('Pickup Confirmed! A $20 charge has been added to this customer.')"> Confirm Pickup </button>
                 </a>
               </td>
             </tr>
@@ -36,7 +36,7 @@
         
   {% else %}
     <p>You are at the employee index, but you are not logged in.</p>
-    <a href="{% url 'login' %}">Log In</a>
-    <a href="{% url 'accounts:register' %}">Sign Up</a>
+    <a href="{% url 'login' %}"> Log In </a>
+    <a href=" {% url 'accounts:register' %}"> Sign Up </a>
   {% endif %}
 {% endblock %}

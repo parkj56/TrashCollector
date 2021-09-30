@@ -1,0 +1,29 @@
+
+body {
+    background-color: #aeb6b9;
+    font-family: "Audiowide", sans-serif;
+    color: black;
+}
+
+h1 {
+    margin-top: 10%;
+    color:blue;
+    text-shadow: 2px 2px 5px white;
+}
+h2{
+    color:white;
+    text-decoration: underline;
+}
+p {
+    font-weight: bold;
+    color: black;
+    text-align: center;
+}
+a{
+    color: blue;
+}
+table {
+    width: 100%;
+    border: 1px solid white;
+    text-align: center;
+}
