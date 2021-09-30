@@ -18,12 +18,13 @@ from .models import Employee
 def index(request):
     # This line will get the Customer model from the other app, it can now be used to query the db for Customers
     logged_in_user = request.user
+    #Customer = apps.get_model('customers.Customer')
     try:
         logged_in_employee = Employee.objects.get(user=logged_in_user)
 
         today = date.today()
         weekday_number= today.weekday()
-        list_of_weekdays= ['Monday', 'Tuesday', 'Wednesday', 'Thursay', 'Friday']
+        list_of_weekdays= ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
         weekday= list_of_weekdays[weekday_number]
         customers_zipcode = Customer.objects.filter(zip_code = logged_in_employee.zip_code)
         # suspetion_dates= Customer.objects.filter(suspend_start=) 
@@ -35,7 +36,7 @@ def index(request):
             'weekly_or_onetimes': weekly_or_onetimes
             
         }
-        #Customer = apps.get_model('customers.Customer')
+      
         return render(request, 'employees/index.html', context)
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse('employees:create'))
@@ -84,9 +85,9 @@ def day_filter(request):
         return render(request, 'employee:index')
 
 @login_required
-def comfirm_pickup(request, customer_id):
+def confirm_pickup(request, customer_id):
     Customer = apps.get_model('customers.Customer')
-    customer_update = Customer.objects.get(pk = customer_id)
+    customer_update = Customer.objects.get(id = customer_id)
     customer_update.charge += 20
     customer_update.save()
     return HttpResponseRedirect(reverse('employees:index'))
