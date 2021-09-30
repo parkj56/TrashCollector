@@ -24,7 +24,7 @@
               <td>{{ customers.name }}</td>
               <td>{{ customers.address }}</td>
               <td>
-                <a href ="{% url 'employees:confirm_pickup' customer.id %}">
+                <a href ="{% url 'employees:confirm_pickup' customers.id %}">
                   <button type="button" onclick="alert('Pickup Confirmed')"> Confirm Pickup </button>
                 </a>
               </td>

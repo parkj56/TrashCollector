@@ -88,6 +88,6 @@ def day_filter(request):
 def confirm_pickup(request, customer_id):
     Customer = apps.get_model('customers.Customer')
     customer_update = Customer.objects.get(id = customer_id)
-    customer_update.charge += 20
+    customer_update.balance += 20
     customer_update.save()
     return HttpResponseRedirect(reverse('employees:index'))
