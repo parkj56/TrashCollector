@@ -23,13 +23,10 @@ def index(request):
 
         today = date.today()
         weekday_number= today.weekday()
-        list_of_weekdays= ['Monday', 'Tuesday', 'Wednesday', 'Thursay', 'Friday']
+        list_of_weekdays= ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
         weekday= list_of_weekdays[weekday_number]
         customers_zipcode = Customer.objects.filter(zip_code = logged_in_employee.zip_code)
-        # suspetion_dates= Customer.objects.filter(suspend_start=) 
         weekly_or_onetimes = customers_zipcode.filter(weekly_pickup= weekday) | customers_zipcode.filter(one_time_pickup= today)
-        
-        
     
         context ={
             'logged_in_employee': logged_in_employee,
@@ -90,4 +87,28 @@ def comfirm_pickup(request, customer_id):
     customer_update = Customer.objects.get(customer_id)
     customer_update.charge += 20
     customer_update.save()
-    return HttpResponseRedirect(reverse('employees:index'))
+    return HttpResponseRedirect(reverse(request, 'employees:index'))
+
+@login_required
+def weekly_schedule(request):
+    # This line will get the Customer model from the other app, it can now be used to query the db for Customers
+    logged_in_user = request.user
+    try:
+        logged_in_employee = Employee.objects.get(user=logged_in_user)
+
+        list_of_weekdays= ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+        customers_zipcode = Customer.objects.filter(zip_code = logged_in_employee.zip_code)
+        schedueled_pickup = customers_zipcode.filter(weekly_pickup= list_of_weekdays)
+    
+        context ={
+            'logged_in_employee': logged_in_employee,
+            'schedueled_pickup': schedueled_pickup
+            
+        }
+        #Customer = apps.get_model('customers.Customer')
+        return render(request, 'employees/index.html', context)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect(reverse('employees:create'))
+
+
+    

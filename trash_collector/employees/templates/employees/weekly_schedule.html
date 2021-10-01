@@ -1,0 +1,23 @@
+{% extends 'Employees\employee_base.html' %}
+
+{% block title %} Employee Home {% endblock %}
+
+{% block header %} Employee Portal {% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+        <h1> All scheduled pickup:</h1>
+         {% for customers in schedueled_pickup %}  
+          <br/>
+          {{customers.name}}, {{customers.address}}  
+          
+        <br /> 
+       {% endfor %}
+        
+        
+  {% else %}
+    <p>You are at the employee index, but you are not logged in.</p>
+    <a href="{% url 'login' %}">Log In</a>
+    <a href="{% url 'accounts:register' %}">Sign Up</a>
+  {% endif %}
+{% endblock %}
