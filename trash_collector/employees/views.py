@@ -18,6 +18,7 @@ from .models import Employee
 def index(request):
     # This line will get the Customer model from the other app, it can now be used to query the db for Customers
     logged_in_user = request.user
+    #Customer = apps.get_model('customers.Customer')
     try:
         logged_in_employee = Employee.objects.get(user=logged_in_user)
 
@@ -27,14 +28,14 @@ def index(request):
         weekday= list_of_weekdays[weekday_number]
         customers_zipcode = Customer.objects.filter(zip_code = logged_in_employee.zip_code)
         weekly_or_onetimes = customers_zipcode.filter(weekly_pickup= weekday) | customers_zipcode.filter(one_time_pickup= today)
-    
+        
         context ={
             'logged_in_employee': logged_in_employee,
             'today': today,
             'weekly_or_onetimes': weekly_or_onetimes
             
         }
-        #Customer = apps.get_model('customers.Customer')
+      
         return render(request, 'employees/index.html', context)
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse('employees:create'))
@@ -61,7 +62,7 @@ def edit_profile(request):
         logged_in_employee.name = name_from_form
         logged_in_employee.zip_code = zip_from_form
         logged_in_employee.save()
-        return HttpResponseRedirect(reverse(request, 'employees:index'))
+        return HttpResponseRedirect(reverse( 'employees:index'))
     else:
         context = {
             'logged_in_employee': logged_in_employee
@@ -83,9 +84,10 @@ def day_filter(request):
         return render(request, 'employee:index')
 
 @login_required
-def comfirm_pickup(request, customer_id):
-    customer_update = Customer.objects.get(customer_id)
-    customer_update.charge += 20
+def confirm_pickup(request, customer_id):
+    Customer = apps.get_model('customers.Customer')
+    customer_update = Customer.objects.get(id = customer_id)
+    customer_update.balance += 20
     customer_update.save()
     return HttpResponseRedirect(reverse(request, 'employees:index'))
 
