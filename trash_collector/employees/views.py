@@ -27,7 +27,7 @@ def index(request):
         list_of_weekdays= ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
         weekday= list_of_weekdays[weekday_number]
         customers_zipcode = Customer.objects.filter(zip_code = logged_in_employee.zip_code)
-        weekly_or_onetimes = customers_zipcode.filter(weekly_pickup= weekday) | customers_zipcode.filter(one_time_pickup= today)
+        weekly_or_onetimes = customers_zipcode.filter(weekly_pickup= weekday) | customers_zipcode.filter(one_time_pickup= today)|customers_zipcode.exclude(suspend_start=weekday)|customers_zipcode.exclude(suspend_end= weekday)
         
         context ={
             'logged_in_employee': logged_in_employee,
@@ -69,48 +69,25 @@ def edit_profile(request):
         }
         return render(request,'employees/edit_profile.html', context)
 
-def day_filter(request):
-    logged_in_user = request.user
-    logged_in_employee = Employee.objects.get(user=logged_in_user)
-    if request.method == "POST":
-        week_day = request.POST.get('day')
-        filtered_customers = Customer.objects.filter(pickup_day=week_day)
-        context = {
-            'filterd_customers': filtered_customers,
-            'logged_in_employee': logged_in_employee,
-        }
-        return render(request, 'employee:index', context)
-    else:
-        return render(request, 'employee:index')
-
 @login_required
 def confirm_pickup(request, customer_id):
     Customer = apps.get_model('customers.Customer')
     customer_update = Customer.objects.get(id = customer_id)
     customer_update.balance += 20
     customer_update.save()
-    return HttpResponseRedirect(reverse(request, 'employees:index'))
+    return HttpResponseRedirect(reverse('employees:index'))
 
 @login_required
-def weekly_schedule(request):
-    # This line will get the Customer model from the other app, it can now be used to query the db for Customers
+def day_filter(request):
     logged_in_user = request.user
-    try:
-        logged_in_employee = Employee.objects.get(user=logged_in_user)
-
-        list_of_weekdays= ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-        customers_zipcode = Customer.objects.filter(zip_code = logged_in_employee.zip_code)
-        schedueled_pickup = customers_zipcode.filter(weekly_pickup= list_of_weekdays)
-    
-        context ={
-            'logged_in_employee': logged_in_employee,
-            'schedueled_pickup': schedueled_pickup
-            
-        }
-        #Customer = apps.get_model('customers.Customer')
-        return render(request, 'employees/index.html', context)
-    except ObjectDoesNotExist:
-        return HttpResponseRedirect(reverse('employees:create'))
-
-
-    
+    logged_in_employee = Employee.objects.get(user=logged_in_user.pk)
+    filter_customers = Customer.objects.filter(zip_code=logged_in_employee.zip_code)
+    filter_day = None
+    if request.method == "POST":
+        filter_day = request.POST.get("filter_day") 
+    context = {
+        "logged_in_user": logged_in_user,
+        "filter_customers": filter_customers,
+        "filter_day": filter_day,
+    }
+    return render(request, 'employees/day_filter.html', context)

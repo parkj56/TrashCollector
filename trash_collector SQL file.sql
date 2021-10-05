@@ -1,0 +1,1 @@
+SELECT * FROM trash_collector.customers_customer;
